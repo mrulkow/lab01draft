@@ -1,0 +1,279 @@
+---
+title: 'Stats 250: Lab 1 Resources'
+author: "Instructional Team"
+date: "Week of January 23rd"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_collapsed: true
+    theme: lumen
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lab Summary
+
+### Learning Objectives
+1. Review the functions covered in Lab 0
+2. Learn how to preview data
+3. Create one and two-way frequency tables
+4. Create bar charts and grouped bar charts
+
+### Functions 
+1. `read.csv()` 
+2. `head()`
+3. `table()`
+4. `barplot()`
+
+
+***
+
+
+## Statistical Review
+
+Depending on the lab and what material is covered, there may be a short review of statistical concepts covered. In this first lab, we'll be working with categorical data - learning how to summarize and visualize categorical variables. 
+
+
+### Frequency Tables
+
+Categorical variables can be summarized through frequency tables. These tables display the number of observations that fall into each group (or category). 
+
+To summarize the counts for two categorical variables, two-way frequency tables (also called "contingency tables") can be used. With a two-way frequency table, conditional probabilities can be calculated to analyze the relationship between the two categorical variables. 
+
+
+### Bar Charts
+
+Bar charts (or bar plots or bar graphs) are a great way to visualize categorical variables. The heights of each bar represents the number of observations that fall into that category - also known as the frequency. 
+
+To visualize the distribution of a categorical variable by the groups of another categorical variable, we can create a grouped bar chart. This is a wonderful visual for analyzing if there is an association between two categorical variables.
+
+
+***
+
+
+## Coding Examples
+
+### Lab 0 Review
+
+In Lab 0, we learned about RStudio and got started writing R code. We learned how to use R as a calculator, how to store values and data, and how to read in a data set. Let's go through a quick refresher. 
+
+
+#### Knitting
+
+At any time, we can knit the document to an HTML file (by clicking on the "Knit" button above this document). The knitted html file is an easier-to-read, well-formatted report. 
+
+
+#### Code Chunks
+
+A code chunk looks like this:
+
+```{r example1}
+45 - 23
+```
+
+Clicking on the green play button will run the code chunk. A code chunk...
+
+- must start and end with three backticks (```)
+- must have a *unique* name (the code chunk above is named "example1")
+
+These two bullet points are typically the cause of most errors we see. Be careful when copying and pasting code -- only take the code portion of the code chunk (and not the code chunk name or backticks).  
+
+
+#### Assignment
+
+We can assign a name to a value or data set in order to reference it later on. In R, we use a left facing arrow. 
+
+```{r assignmentExample}
+x <- 5 * 7
+```
+
+We read this as "x gets the value of 5 * 7" - and we can find this stored in our Environment (the top right window). Remember, R is case sensitive! So a lowercase x is different than an uppercase X. 
+
+
+#### Reading and Storing Data
+
+Finally, we learned how to read in data. By itself, the `read.csv()` function reads in a data set. By using the left facing arrow (`<-`), we can assign a name to this data set. Let's read in the "penguins.csv" data set and store it as "penguins". 
+
+```{r readData}
+penguins <- read.csv("penguins.csv")
+```
+
+We can preview the data set by clicking on the name of the data set in our Environment (top right window). If you click on the word "penguins" in the top right window, a new window should open with the full data set. 
+
+If you have any questions about Lab 0, now is a great time to ask! If not, let's learn some new functions. 
+
+
+### Previewing the Data
+
+Instead of opening up the data set in a new window, we can also preview the data in the R Markdown document. The `head()` function displays the first few rows of a data set.  
+
+```{r previewData}
+head(penguins)
+```
+
+By default, this function outputs the first six rows. We can include an extra argument (`n`) to specify the number of rows we wish to preview. 
+
+```{r previewData2}
+head(penguins, n = 10)
+```
+
+
+### Frequency Tables
+
+To reference a *specific* variable within a data set, we use the structure:
+
+`dataset$variable`  
+
+Suppose we wanted to create a frequency table for the variable `species` in the `penguins` data set. We would use the following code:
+
+```{r table}
+table(penguins$species)
+```
+
+From this output, we can see there are 146 Adelie penguins, 68 Chinstrap penguins, and 119 Gentoo penguins in the data set.
+
+It is important to include the data set when referencing the variable. Let's see what happens when we don't:
+
+```{r tableError, error = T}
+table(species)
+```
+
+Because we don't have anything stored as `species`, R doesn't know what we're talking about! The variable `species` only exists *inside* of the `penguins` data set.
+
+**Demo #1**: Create a frequency table for the `island` variable in the `penguins` data set.  
+
+```{r demo1, error = T}
+# Replace this comment with your code
+
+```
+
+Think About It: What proportion of penguins were found on Biscoe island? 
+
+
+### Two-Way Frequency Tables
+
+To create a two-way frequency table, we simply add a second variable to the `table()` function. Let's make a two-way frequency table with `species` and `island`.
+
+```{r twoWayTable}
+table(penguins$species, penguins$island)
+```
+
+We can see that all of the Gentoo penguins in our data set live on Biscoe island.
+
+Note: whichever variable is provided first will give you the rows of your table. The second variable will give you the columns. 
+
+Note: we separated the two variables inside of `table()` with a comma -- it's important to remember this! Every argument inside of a function must be separated with a comma.
+
+Another helpful function for working with tables is the `addmargins()` function. If you copy the code from our last chunk and paste it inside the `addmargins()` function, R will add the row and column totals to the table.
+
+Note: copying and pasting a function *inside* of another function is called "nesting".
+
+```{r tableTotals}
+addmargins(table(penguins$species, penguins$island))
+```
+
+Think About It: What proportion of Adelie penguins were found on Biscoe island? 
+
+
+### Bar Charts (or Bar Plots)
+
+To create a bar chart, we "nest" the `table()` function inside of the `barplot()` function. 
+
+```{r basicBarPlot}
+barplot(table(penguins$species))
+```
+
+This bar chart looks pretty basic -- it's missing axis labels and a title. In order to add these features to the plot, we simply include more arguments. *Each argument must be separated by a comma.* 
+
+This can look busy as one line of code so we put each argument on a new line. Let's see what a more complete bar chart looks like. **Be careful with commas and parentheses!**
+
+```{r barPlot}
+
+barplot(
+  table(penguins$species),
+  main = "Bar Chart of Penguin Species",
+  xlab = "Species",
+  ylab = "Frequency",
+  col = c("orange", "purple", "darkgreen")
+  )
+
+```
+
+In the code above, we utilized the following arguments:
+
+- `main`: main plot title
+- `xlab`: x-axis label
+- `ylab`: y-axis label
+- `col`: color for each category*
+
+*Adding color can be a fun way to make the graph your own. For a list of available colors, check out the following link: https://tinyurl.com/rcoloroptions
+
+
+**Demo #2**: Make a bar chart for the number of penguins on each island (using the `island` variable). Be sure to give your plot appropriate axis labels and a title. Challenge: add some fun colors to your plot!
+
+```{r demo2, error = T}
+# Replace this comment with your code
+
+```
+
+Did you get any errors? If not, well done! If you did, double check that each argument is separated by a comma and that you have the right number of parentheses. Don't be afraid to ask your GSI for help!
+
+
+### Grouped Bar Charts 
+
+Sometimes, we may want to plot two categorical variables simultaneously. To visualize the distribution of one categorical variable by the groups of another categorical variable, we nest a two-way table inside the `barplot()` function. Additionally, we need to add the arguments `beside = TRUE` and `legend = TRUE`.
+
+```{r basicGroupedBarChart}
+barplot(table(penguins$species, penguins$island), beside = TRUE, legend = TRUE)
+```
+
+As we did before, we can use additional arguments for the title, axis labels, and colors.
+
+```{r groupedBarPlot1}
+
+barplot(
+  table(penguins$species, penguins$island),
+  beside = TRUE,
+  legend = TRUE,
+  main = "Distribution of Species Plotted by Island",
+  xlab = "Island",
+  ylab = "Frequency",
+  col = c("orange", "purple", "darkgreen")
+  )
+
+```
+
+The first variable will be the distribution that is plotted - and this distribution will be plotted for each group of the second variable. 
+
+If we wanted to plot the distribution of penguin species, but we wanted to plot this for male penguins and for female penguins (to see if there was an association between the variables), we would use the following code:
+
+```{r groupedBarPlot2}
+
+barplot(
+  table(penguins$species, penguins$sex), 
+  beside = TRUE,
+  legend = TRUE,
+  main = "Distribution of Species Plotted by Sex",
+  xlab = "Island",
+  ylab = "Frequency",
+  col = c("orange", "purple", "darkgreen")
+  )
+
+```
+
+The legend covers up the graph a little, but that's okay for this course (it can get a little trick to relocate).
+
+**Demo #3**: Make a grouped bar chart that visualizes the distribution of penguin species plotted across the various years of the study. Feel free to copy, paste, and edit the code chunk above. 
+
+```{r demo3, error = T}
+# Replace this comment with your code
+
+```
+
+Those are all the new functions we have for today! We will learn how to summarize and visualize *quantitative* data in Lab 2!
+
+Click on the file titled `lab01assignment.Rmd` in the bottom right window to open up the lab assignment for today.
+
